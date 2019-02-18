@@ -2,7 +2,16 @@
   <%= javascript_include_tag 'spree/return_authorization' %>
 <% end %>
 
-<fieldset><h3><%= Spree.t(:new_return_request, scope: :return_authorizations_view) %></h3></fieldset>
+<fieldset><h3><%= Spree.t(:return_request_for_order, scope: :return_authorizations_view) %> <%=@order.number%></h3></fieldset>
+<div>
+  Order Number <%=@order.number%>
+</div>
+<div>
+  Purchased On <%=@order.created_at.strftime("%e/%m/%Y")%>
+</div>
+<div>
+  Total Items <%=@order.line_items.count%>
+</div>
 
 <%= form_for [@order, @return_authorization] do |f| %>
   <fieldset>
@@ -10,7 +19,7 @@
     <div class="form-actions" data-hook="buttons" class="<%= all_item_returned? %>">
       <%= button Spree.t(:create), 'save' %>
       <span class="or"><%= Spree.t(:or) %></span>
-      <%= button_link_to Spree.t('actions.cancel'), spree.order_url(@order), icon: 'delete' %>
+      <%= button_link_to Spree.t('actions.cancel'), spree.edit_account_path, icon: 'delete' %>
     </div>
   </fieldset>
 <% end %>

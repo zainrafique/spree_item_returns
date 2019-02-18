@@ -3,6 +3,11 @@
 
 en:
   spree:
+    price_each: Price Each
+    preffed_resolution: Preffed Resolution
+    more_info_required: More Information Required
+    detail_of_return: Details of Return
+    return_request_for_order: Return Request for Order
     return_authorization_view:
       my_returns_history: My Returns History
     return_authorizations_controller:

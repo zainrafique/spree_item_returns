@@ -110,7 +110,7 @@ module Spree
     end
 
     def return_authorization_params
-      params.require(:return_authorization).permit(:return_authorization_reason_id, :memo, return_items_attributes: [:inventory_unit_id, :_destroy, :exchange_variant_id])
+      params.require(:return_authorization).permit(:return_authorization_reason_id, :more_info, :quantity, :resolution , :memo, return_items_attributes: [:inventory_unit_id, :_destroy, :exchange_variant_id])
     end
   end
 end
