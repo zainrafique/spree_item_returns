@@ -47,8 +47,13 @@
     </tbody>
   </table>
 
-
-
+  <h5>
+    Upload Images
+  </h5>
+  <div>
+    To speed up the return request process, please ttach photos displaying the issue wherever possible.
+  </div>
+  <input type="file" class="form-group" name="img" multiple>
   <%= f.field_container :reason, class: ['form-group'] do %>
     <%= f.label :reason, Spree.t(:reason) %>
 
