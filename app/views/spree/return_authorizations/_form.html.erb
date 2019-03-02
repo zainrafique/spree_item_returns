@@ -1,3 +1,14 @@
+<% order__return_request_contents     = Spree::PageContent.from_gen_slug('order-return') %>
+<% order_return_request_quantity = order__return_request_contents.spec_slug('order-return-request-quantity').last%>
+<% order_return_request_product_name = order__return_request_contents.spec_slug('order-return-request-product-name').last%>
+<% order_return_request_price_each = order__return_request_contents.spec_slug('order-return-request-price-each').last%>
+<% order_return_request_reason = order__return_request_contents.spec_slug('order-return-request-reason').last%>
+<% order_return_request_resolution = order__return_request_contents.spec_slug('order-return-request-resolution').last%>
+<% order_return_request_more_info = order__return_request_contents.spec_slug('order-return-request-more-info').last%>
+<% order_return_request_price_upload_images = order__return_request_contents.spec_slug('order-return-request-price-upload-images').last%>
+<% order_return_request_detail = order__return_request_contents.spec_slug('order-return-request-detail').last%>
+<% order_return_request_submit_button_label = order__return_request_contents.spec_slug('order-return-request-submit-button-label').last%>
+<%#= order_return_request_submit_button_label.try(:title) %>
 <% display_only ||= false %>
 <div data-hook="admin_return_authorization_form_fields">
   <table class="table table-bordered index return-items-table">
@@ -8,9 +19,9 @@
             <%= check_box_tag 'select-all', '0', false, { class: "#{all_item_returned?}" } %>
           <% end %>
         </th>
-        <th><%= Spree.t(:quantity) %></th>
-        <th><%= Spree.t(:product) %></th>
-        <th><%= Spree.t(:price_each) %></th>
+        <th><%= order_return_request_quantity.try(:title) %></th>
+        <th><%= order_return_request_product_name.try(:title) %></th>
+        <th><%= order_return_request_price_each.try(:title) %></th>
       </tr>
     </thead>
     <tbody>
@@ -31,7 +42,7 @@
               <% end %>
             </td>
             <td>
-              <%= f.select :quantity, options_for_select((1..5).to_a.map{|num| [num,num]}, inventory_unit.quantity.to_i),{}%>
+              <%= f.select :quantity, options_for_select((1..inventory_unit.quantity.to_i).to_a.map{|num| [num,num]}, inventory_unit.quantity.to_i),{}%>
             </td>
             <td>
               <div class="variant-name"><%= inventory_unit.variant.name %></div>
@@ -48,35 +59,35 @@
   </table>
 
   <h5>
-    Upload Images
+    <%= order_return_request_price_upload_images.try(:title) %>
   </h5>
   <div>
     To speed up the return request process, please ttach photos displaying the issue wherever possible.
   </div>
   <input type="file" class="form-group" name="img" multiple>
   <%= f.field_container :reason, class: ['form-group'] do %>
-    <%= f.label :reason, Spree.t(:reason) %>
+    <%= f.label :reason, order_return_request_reason.try(:title) %>
 
     <%= f.select :return_authorization_reason_id, @return_authorization_reasons.collect{ |r|[r.name, r.id] }, { include_blank: true }, { class: 'form-control add-item', "data-placeholder" => Spree.t(:select_a_return_authorization_reason), disabled: display_only } %>
     <%= f.error_message_on :reason %>
   <% end %>
 
   <%= f.field_container :resolution, class: ['form-group'] do %>
-      <%= f.label :resolution, Spree.t(:preffed_resolution) %>
+      <%= f.label :resolution, order_return_request_resolution.try(:title)  %>
 
       <%= f.select :resolution, [["Return","return"],["Exchange","exchange"]], { include_blank: true }, { class: 'form-control add-item', "data-placeholder" => Spree.t(:preffed_resolution), disabled: display_only } %>
       <%= f.error_message_on :resolution %>
   <% end %>
 
   <%= f.field_container :more_info, class: ['form-group'] do %>
-      <%= f.label :more_info, Spree.t(:more_info_required) %>
+      <%= f.label :more_info, order_return_request_more_info.try(:title) %>
 
       <%= f.select :more_info, @return_authorization_reasons.collect{ |r|[r.name, r.name] }, { include_blank: true }, { class: 'form-control add-item', "data-placeholder" => Spree.t(:more_info_required), disabled: display_only } %>
       <%= f.error_message_on :more_info %>
   <% end %>
 
   <%= f.field_container :memo, class: ['form-group'] do %>
-    <%= f.label :memo, Spree.t(:detail_of_return) %>
+    <%= f.label :memo, order_return_request_detail.try(:title) %>
     <%= f.text_area :memo, class: 'form-control', disabled: display_only %>
     <%= f.error_message_on :memo %>
   <% end %>

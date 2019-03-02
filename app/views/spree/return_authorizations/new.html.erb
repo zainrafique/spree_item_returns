@@ -1,8 +1,14 @@
+<% order__return_request_contents     = Spree::PageContent.from_gen_slug('order-return') %>
+<% order_return_request_heading = order__return_request_contents.spec_slug('order-return-request-heading').last%>
+<%#= order_return_request_heading.try(:title) %>
 <% content_for :head do %>
   <%= javascript_include_tag 'spree/return_authorization' %>
 <% end %>
 
-<fieldset><h3><%= Spree.t(:return_request_for_order, scope: :return_authorizations_view) %> <%=@order.number%></h3></fieldset>
+<fieldset><h3><%= order_return_request_heading.try(:title) %> <%=@order.number%></h3></fieldset>
+<div>
+  <%= order_return_request_heading.try(:description) %>
+</div>
 <div>
   Order Number <%=@order.number%>
 </div>
