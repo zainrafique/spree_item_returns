@@ -1,0 +1,9 @@
+
+<% content_for :head do %>
+  <%= javascript_include_tag 'spree/return_authorization' %>
+<% end %>
+
+<%= form_for [@order, @return_authorization] do |f| %>
+  <%= render partial: 'spree/ar/return_authorizations/form', locals: { f: f } %>
+     
+<% end %>
