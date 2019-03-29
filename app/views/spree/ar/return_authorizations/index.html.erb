@@ -1,0 +1,41 @@
+<div data-hook="admin_return_authorization_form_fields">
+  <h3>
+    <%= Spree.t(:my_returns_history, scope: :return_authorization_view)%>
+    <%= link_to(account_path, class: 'btn btn-primary pull-right') do %>
+      <span class='glyphicon glyphicon-list-alt'></span>
+      <%= Spree.t(:back_to_account) %>
+    <% end %>
+  </h3>
+
+  <table class="table table-striped index return-items-table">
+    <thead>
+      <tr data-hook="rma_header">
+        <th><%= Spree.t(:order) %></th>
+        <th><%= Spree.t(:return_authorization) %></th>
+        <th><%= Spree.t(:return_state) %></th>
+        <th><%= Spree.t(:created_at) %></th>
+        <th><%= Spree.t(:action) %></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% if @return_authorizations.present? %>
+        <% @return_authorizations.each do |return_authorization| %>
+          <% order = return_authorization.order %>
+          <tr>
+            <td><%= link_to order.number , order_path(order) %></td>
+            <td><%= link_to(return_authorization.number, order_return_authorization_path(order,id: return_authorization.number)) %> </td>
+            <td><%= return_authorization.state %></td>
+            <td><%= (return_authorization.created_at).strftime('%v') %></td>
+            <td>
+              <%= link_to(order_return_authorization_path(order,id: return_authorization.number), class: 'btn btn-xs btn-primary') do %>
+                <span class='glyphicon glyphicon-plus'></span>
+                <%= Spree.t(:view_details) %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

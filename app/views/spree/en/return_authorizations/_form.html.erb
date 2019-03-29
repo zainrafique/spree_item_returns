@@ -1,0 +1,164 @@
+<% order__return_request_contents     = Spree::PageContent.from_gen_slug('order-return') %>
+<% order_return_request_quantity = order__return_request_contents.spec_slug('order-return-request-quantity').last%>
+<% order_return_request_product_name = order__return_request_contents.spec_slug('order-return-request-product-name').last%>
+<% order_return_request_price_each = order__return_request_contents.spec_slug('order-return-request-price-each').last%>
+<% order_return_request_reason = order__return_request_contents.spec_slug('order-return-request-reason').last%>
+<% order_return_request_resolution = order__return_request_contents.spec_slug('order-return-request-resolution').last%>
+<% order_return_request_more_info = order__return_request_contents.spec_slug('order-return-request-more-info').last%>
+<% order_return_request_price_upload_images = order__return_request_contents.spec_slug('order-return-request-price-upload-images').last%>
+<% order_return_request_detail = order__return_request_contents.spec_slug('order-return-request-detail').last%>
+<% order_return_request_submit_button_label = order__return_request_contents.spec_slug('order-return-request-submit-button-label').last%>
+
+<% order__return_request_contents     = Spree::PageContent.from_gen_slug('order-return') %>
+<% order_return_request_heading = order__return_request_contents.spec_slug('order-return-request-heading').last%>
+
+
+<% display_only ||= false %>
+<div class="clearfix"></div>
+<div class="container" data-hook="admin_return_authorization_form_fields">
+  <div class="stor-full-top">
+    <div class="dv-title text-center col-md-12">
+    <h2><%= order_return_request_heading.try(:title) %> <%=@order.number%></h2>
+    </div>
+
+    <div class="clearfix"></div>
+  </div>
+  <div class="locan-stor cate-pg ord_pg">
+
+    <%= render  partial: "spree/en/account_management/side_bar_tab" %>     
+
+    <div class="col-lg-10 col-md-10 col-sm-9 p-0 stor-return-pg">
+      <div class="col-lg-12 col-md-12 col-sm-12 p-0 det-ord-return"> 
+        <div class="col-lg-12 col-md-12 col-sm-12 odr-return-main">
+          <div class="col-lg-12 col-md-12 col-sm-12 wet-text">
+            <p><%= order_return_request_heading.try(:description) %></p>
+          </div>
+
+          <div class="re_turn_person col-lg-12 col-md-12 col-sm-12 p-0 m-0">
+            <ul class="col-lg-6 col-md-6 col-sm-6 p-0 sedd_to">
+              <li>Store Name: (Store Name)</li>
+              <li>Order Number: ( #<%=@order.number%>)</li>
+              <li>Purchased On: <%=@order.created_at.strftime("%e/%m/%Y")%></li>
+              <li>Total Items: <%=@order.line_items.count%></li>
+            </ul>
+
+            <ul class="col-lg-6 col-md-6 col-sm-6 p-0 order-back m-0 text-right">
+              <!-- <li><a href="account-orders-en.html" ><button>BACK TO ORDER</button></a></li> -->
+              <li><%= link_to "BACK TO ORDER", spree.edit_account_path(partial: "orders",with_form: true, lang: "en")%></li>
+            </ul>     
+          </div>
+
+
+          <div class="table_qty col-lg-12 col-md-12 col-sm-12 p-0 m-0">
+            <table class="table">
+              <thead>
+                <tr  data-hook="rma_header">
+                  <th>
+                    <% if @return_authorization.allow_return_item_changes? && @return_authorization.new_record? %>
+                      <%= check_box_tag 'select-all', '0', false, { class: "#{all_item_returned?}" } %>
+                    <% end %>
+                      
+                  </th>
+                  <th><%= order_return_request_quantity.try(:title) %></th>
+                  <th><%= order_return_request_product_name.try(:title) %></th>
+                  <th><%= order_return_request_price_each.try(:title) %></th>
+                </tr>
+              </thead>
+            <tbody>
+              <%= f.fields_for :return_items, @form_return_items do |item_fields| %>
+                <% return_item = item_fields.object %>
+                <% inventory_unit = return_item.inventory_unit %>
+
+                <% editable ||= inventory_unit.shipped? && @return_authorization.allow_return_item_changes? && !return_item.reimbursement && line_item_returnable?(inventory_unit.line_item) && @return_authorization.new_record? %>
+
+                <% if return_item.returnable? %>
+                  <tr>
+                    <td>
+                      <% if editable %>
+                        <%= item_fields.hidden_field :inventory_unit_id %>
+                        <%= item_fields.check_box :_destroy, { checked: return_item.persisted?, class: 'cck', "data-price" => return_item.pre_tax_amount, readonly: true }, '0', '1' %>
+                      <% elsif @return_authorization.persisted? %>  <!-- show checkbox only for show -->
+                        <%= item_fields.check_box :_destroy, { checked: return_item.persisted?, class: 'cck', "data-price" => return_item.pre_tax_amount, readonly: true, disabled: 'disabled' }, '0', '1' %>
+                      <% end %>
+                    </td>
+                    <td>
+                      <%= f.select :quantity, options_for_select((1..inventory_unit.quantity.to_i).to_a.map{|num| [num,num]}, inventory_unit.quantity.to_i),{}%>
+                    </td>
+                    <td><%= inventory_unit.variant.options_text %>x<%= inventory_unit.variant.name %></td>
+                    <td>
+                      <% return_item.set_default_pre_tax_amount %>
+                      <%= return_item.display_pre_tax_amount %>
+                    </td>
+                  </tr>
+                <% end %>
+                
+              <% end %>
+            </tbody>
+            </table>
+          </div>
+
+          <div class="return_reason">
+            <ul>
+              <li>
+                <label><%= order_return_request_reason.try(:title) %></label>
+                
+                <%= f.select :return_authorization_reason_id, @return_authorization_reasons.collect{ |r|[r.name, r.id] }, { include_blank: true }, {} %>
+              </li>
+              
+              <li>
+                <label><%= order_return_request_resolution.try(:title) %>></label>
+                <%= f.select :resolution, [["Return","return"],["Exchange","exchange"]], { include_blank: true }, {} %>
+              </li>
+              
+              <li>
+                <label><%= order_return_request_more_info.try(:title) %></label>
+                <%= f.select :more_info, @return_authorization_reasons.collect{ |r|[r.name, r.name] }, { include_blank: true }, { } %>
+              </li>
+
+
+            </ul>
+          </div>
+          <div class="return_reason-img">
+            <h2><%= order_return_request_price_upload_images.try(:title) %></h2>
+            <p>To speed up the return request process, please attach photos displaying the issue wherever possible.</p>
+            <div class="img-up-lod">
+            <label id="#bb">Select Image
+            <input type="file" id="File"   size="60"  name="img" multiple>
+            </label> 
+            </div>
+          </div>
+          <div class="return_details">
+            <label><%=  order_return_request_detail.try(:title) %></label>
+            <%= f.text_area :memo, class: 'form-control' %>
+            <%= hidden_field_tag "lang", "en" %>
+            <%= f.error_message_on :memo %>
+            <div class="st-set-sub text-right" data-hook="buttons" class="<%= all_item_returned? %>">
+              <input class="sb_frm_return" type="submit" value="SUBMIT REQUEST">
+              <%#= button_link_to Spree.t('actions.cancel'), spree.edit_account_path, icon: 'delete' %>
+            </div>
+          </div>
+          <div class="dvd"></div>
+          <div class="ftr_not">
+            <p>PLEASE NOTE: Once your RMA has been reviewed, the outcome will be emailed to the following email address: (User Email Address)<br><br>
+            Please use this for returns/warranty issues only. For all other enquiries please lodge a ticket through the Help Centre.</p>
+          </div>
+           <div class="ftr_not">
+            <% if Spree::Config[:expedited_exchanges] %>
+              <div class="expedited-exchanges-warning"><%= Spree.t(:expedited_exchanges_warning, days_window: Spree::Config[:expedited_exchanges_days_window]) %></div>
+            <% end %>
+          </div>
+
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </div>      
+</div>
+    
+<div class="clearfix"></div>
+
+<div class="adver-sec">
+  <div class="container">
+    <div class="adver-sec-mn"><%= image_tag "advertize.jpg", alt: "" %></div>
+  </div>
+</div>
